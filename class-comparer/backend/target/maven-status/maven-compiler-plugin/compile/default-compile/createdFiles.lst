@@ -1,0 +1,14 @@
+com\example\classcompare\service\SimilarityService.class
+com\example\classcompare\model\StoryData.class
+com\example\classcompare\util\ExcelReader$1.class
+com\example\classcompare\service\ExcelExportService.class
+com\example\classcompare\model\Relationship.class
+com\example\classcompare\model\Metrics.class
+com\example\classcompare\model\StoryComparisonResult.class
+com\example\classcompare\util\ExcelReader.class
+com\example\classcompare\model\ComparisonResponse.class
+com\example\classcompare\ClassCompareApp.class
+com\example\classcompare\util\JsonReader.class
+com\example\classcompare\controller\FileUploadController.class
+com\example\classcompare\service\ComparisonService.class
+com\example\classcompare\model\DatasetData.class

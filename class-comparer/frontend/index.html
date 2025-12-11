@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Comparer - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .file-input-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .file-input-wrapper h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .file-label:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .file-name {
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.9em;
+            min-height: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .compare-btn,
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: none;
+        }
+
+        .download-mod-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            min-width: 200px;
+        }
+
+        .download-btn.show,
+        .download-mod-btn.show {
+            display: block;
+        }
+
+        .compare-btn:hover:not(:disabled),
+        .download-btn:hover:not(:disabled),
+        .download-mod-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .compare-btn:disabled,
+        .download-btn:disabled,
+        .download-mod-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .search-section.show {
+            display: block;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .story-card.hidden {
+            display: none;
+        }
+
+        .story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .story-title {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .merge-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .merge-btn.show {
+            display: block;
+        }
+
+        .section-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .classes-section,
+        .relationships-section {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .common {
+            color: #10b981;
+        }
+
+        .only-manual {
+            color: #f59e0b;
+        }
+
+        .only-llm {
+            color: #ef4444;
+        }
+
+        .item-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .item-tag {
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .item-tag.common {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .item-tag.only-manual {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .item-tag.only-llm {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .relationship-item {
+            background: #f3f4f6;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            border-left: 3px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .relationship-item.common {
+            border-left-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .relationship-item.only-manual {
+            border-left-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .relationship-item.only-llm {
+            border-left-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.1em;
+            padding: 0 5px;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        .highlight {
+            background-color: #fef08a;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #667eea;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .stats.show {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .item-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Class Comparer Enhanced</h1>
+        <p class="subtitle">Compare, Edit, and Analyze Classes & Relationships</p>
+
+        <div class="error" id="error"></div>
+
+        <div class="upload-section">
+            <div class="file-input-wrapper">
+                <h3>📁 Manual Classes (JSON)</h3>
+                <label for="manual-file" class="file-label">Choose File</label>
+                <input type="file" id="manual-file" class="file-input" accept=".json">
+                <div class="file-name" id="manual-file-name">No file selected</div>
+            </div>
+            <div class="file-input-wrapper">
+                <h3>🤖 LLM Generated Classes (JSON)</h3>
+                <label for="llm-file" class="file-label">Choose File</label>
+                <input type="file" id="llm-file" class="file-input" accept=".json">
+                <div class="file-name" id="llm-file-name">No file selected</div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="compare-btn" id="compare-btn" disabled>Compare Files</button>
+            <button class="download-btn" id="download-btn">📥 Original Excel</button>
+            <button class="download-mod-btn" id="download-mod-btn">📝 Modified Excel</button>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="search-section" id="search-section">
+            <input type="text" class="search-input" id="search-input"
+                placeholder="🔍 Search classes and relationships...">
+        </div>
+
+        <div class="loading" id="loading">
+            <div>⏳ Comparing files...</div>
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+
+        const manualFileInput = document.getElementById('manual-file');
+        const llmFileInput = document.getElementById('llm-file');
+        const manualFileName = document.getElementById('manual-file-name');
+        const llmFileName = document.getElementById('llm-file-name');
+        const compareBtn = document.getElementById('compare-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const downloadModBtn = document.getElementById('download-mod-btn');
+        const searchSection = document.getElementById('search-section');
+        const searchInput = document.getElementById('search-input');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const errorDiv = document.getElementById('error');
+        const statsDiv = document.getElementById('stats');
+
+        let currentData = null;
+        let selectedItems = {}; // { storyIndex: { classes: [], relationships: [] } }
+
+        manualFileInput.addEventListener('change', (e) => {
+            manualFileName.textContent = e.target.files[0]?.name || 'No file selected';
+            checkFiles();
+        });
+
+        llmFileInput.addEventListener('change', (e) => {
+            llmFileName.textContent = e.target.files[0]?.name || 'No file selected';
+            checkFiles();
+        });
+
+        function checkFiles() {
+            compareBtn.disabled = !(manualFileInput.files.length && llmFileInput.files.length);
+        }
+
+        compareBtn.addEventListener('click', async () => {
+            const formData = new FormData();
+            formData.append('manual', manualFileInput.files[0]);
+            formData.append('llm', llmFileInput.files[0]);
+
+            errorDiv.classList.remove('show');
+            results.classList.remove('show');
+            statsDiv.classList.remove('show');
+            searchSection.classList.remove('show');
+            downloadBtn.classList.remove('show');
+            downloadModBtn.classList.remove('show');
+            loading.classList.add('show');
+            compareBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                currentData = await response.json();
+                renderAll();
+                downloadBtn.classList.add('show');
+                downloadModBtn.classList.add('show');
+                searchSection.classList.add('show');
+            } catch (error) {
+                errorDiv.textContent = `Error: ${error.message}. Make sure the backend server is running on port 8080.`;
+                errorDiv.classList.add('show');
+            } finally {
+                loading.classList.remove('show');
+                compareBtn.disabled = false;
+            }
+        });
+
+        downloadBtn.addEventListener('click', async () => {
+            downloadExcel(`${API_BASE_URL}/export/excel`, 'comparison_results.xlsx');
+        });
+
+        downloadModBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/export/modified`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(currentData)
+                });
+
+                if (!response.ok) throw new Error('Failed to download modified Excel');
+
+                const blob = await response.blob();
+                downloadBlob(blob, 'modified_comparison_results.xlsx');
+            } catch (error) {
+                alert('Error downloading modified Excel: ' + error.message);
+            }
+        });
+
+        async function downloadExcel(url, filename) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to download Excel file');
+                const blob = await response.blob();
+                downloadBlob(blob, filename);
+            } catch (error) {
+                alert('Error downloading Excel file: ' + error.message);
+            }
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            filterResults(searchTerm);
+        });
+
+        function renderAll() {
+            calculateOverallStats();
+            displayResults(currentData);
+        }
+
+        function calculateOverallStats() {
+            let tpClass = 0, fpClass = 0, fnClass = 0;
+            let tpRel = 0, fpRel = 0, fnRel = 0;
+
+            currentData.stories.forEach(story => {
+                tpClass += story.common?.length || 0;
+                fnClass += story.onlyManual?.length || 0;
+                fpClass += story.onlyLLM?.length || 0;
+
+                tpRel += story.commonRelationships?.length || 0;
+                fnRel += story.onlyManualRelationships?.length || 0;
+                fpRel += story.onlyLLMRelationships?.length || 0;
+            });
+
+            const totalTP = tpClass + tpRel;
+            const totalFP = fpClass + fpRel;
+            const totalFN = fnClass + fnRel;
+
+            const precision = totalTP / (totalTP + totalFP) || 0;
+            const recall = totalTP / (totalTP + totalFN) || 0;
+            const f1 = 2 * (precision * recall) / (precision + recall) || 0;
+
+            statsDiv.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-value">${(precision * 100).toFixed(1)}%</div>
+                    <div class="stat-label">Overall Precision</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${(recall * 100).toFixed(1)}%</div>
+                    <div class="stat-label">Overall Recall</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${(f1 * 100).toFixed(1)}%</div>
+                    <div class="stat-label">Overall F1 Score</div>
+                </div>
+            `;
+            statsDiv.classList.add('show');
+        }
+
+        function displayResults(data) {
+            results.innerHTML = '';
+
+            if (!data.stories || data.stories.length === 0) {
+                results.innerHTML = '<p style="text-align: center; color: #666;">No stories found.</p>';
+                results.classList.add('show');
+                return;
+            }
+
+            data.stories.forEach((story, index) => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.dataset.storyName = story.storyName;
+                card.dataset.index = index;
+
+                // Header with Merge Button
+                const header = document.createElement('div');
+                header.className = 'story-header';
+                header.innerHTML = `<div class="story-title">${story.storyName}</div>`;
+
+                const mergeBtn = document.createElement('button');
+                mergeBtn.className = 'merge-btn';
+                mergeBtn.textContent = 'Merge Selected';
+                mergeBtn.onclick = () => mergeItems(index);
+                header.appendChild(mergeBtn);
+
+                card.appendChild(header);
+
+                let html = '<div class="section-container">';
+
+                // Classes section
+                html += '<div class="classes-section">';
+                html += '<div class="section-title">📦 Classes</div>';
+
+                // Common Classes
+                if (story.common && story.common.length > 0) {
+                    html += `<div class="section-title common" style="font-size: 0.95em;">✅ Matched (${story.common.length})</div>`;
+                    html += '<div class="item-list">';
+                    story.common.forEach((c, i) => {
+                        html += createItemTag(c, 'common', index, 'class', 'common', i);
+                    });
+                    html += '</div>';
+                }
+
+                // Manual Only Classes
+                if (story.onlyManual && story.onlyManual.length > 0) {
+                    html += `<div class="section-title only-manual" style="font-size: 0.95em;">📌 Manual Only (${story.onlyManual.length})</div>`;
+                    html += '<div class="item-list">';
+                    story.onlyManual.forEach((c, i) => {
+                        html += createItemTag(c, 'only-manual', index, 'class', 'onlyManual', i, true);
+                    });
+                    html += '</div>';
+                }
+
+                // LLM Only Classes
+                if (story.onlyLLM && story.onlyLLM.length > 0) {
+                    html += `<div class="section-title only-llm" style="font-size: 0.95em;">🤖 LLM Only (${story.onlyLLM.length})</div>`;
+                    html += '<div class="item-list">';
+                    story.onlyLLM.forEach((c, i) => {
+                        html += createItemTag(c, 'only-llm', index, 'class', 'onlyLLM', i, true);
+                    });
+                    html += '</div>';
+                }
+                html += '</div>'; // End Classes Section
+
+                // Relationships section
+                html += '<div class="relationships-section">';
+                html += '<div class="section-title">🔗 Relationships</div>';
+
+                // Common Relationships
+                if (story.commonRelationships && story.commonRelationships.length > 0) {
+                    html += `<div class="section-title common" style="font-size: 0.95em;">✅ Matched (${story.commonRelationships.length})</div>`;
+                    story.commonRelationships.forEach((r, i) => {
+                        html += createRelationshipItem(r, 'common', index, 'relationship', 'commonRelationships', i);
+                    });
+                }
+
+                // Manual Only Relationships
+                if (story.onlyManualRelationships && story.onlyManualRelationships.length > 0) {
+                    html += `<div class="section-title only-manual" style="font-size: 0.95em;">📌 Manual Only (${story.onlyManualRelationships.length})</div>`;
+                    story.onlyManualRelationships.forEach((r, i) => {
+                        html += createRelationshipItem(r, 'only-manual', index, 'relationship', 'onlyManualRelationships', i, true);
+                    });
+                }
+
+                // LLM Only Relationships
+                if (story.onlyLLMRelationships && story.onlyLLMRelationships.length > 0) {
+                    html += `<div class="section-title only-llm" style="font-size: 0.95em;">🤖 LLM Only (${story.onlyLLMRelationships.length})</div>`;
+                    story.onlyLLMRelationships.forEach((r, i) => {
+                        html += createRelationshipItem(r, 'only-llm', index, 'relationship', 'onlyLLMRelationships', i, true);
+                    });
+                }
+                html += '</div>'; // End Relationships Section
+
+                html += '</div>'; // End Section Container
+
+                const contentDiv = document.createElement('div');
+                contentDiv.innerHTML = html;
+                card.appendChild(contentDiv);
+
+                results.appendChild(card);
+            });
+
+            results.classList.add('show');
+            attachEventListeners();
+        }
+
+        function createItemTag(text, className, storyIdx, type, listName, itemIdx, selectable = false) {
+            const checkbox = selectable ? `<input type="checkbox" class="item-checkbox" data-story="${storyIdx}" data-type="${type}" data-list="${listName}" data-idx="${itemIdx}">` : '';
+            return `<span class="item-tag ${className}" data-text="${text}">
+                ${checkbox}
+                ${text}
+                <button class="delete-btn" onclick="deleteItem(${storyIdx}, '${type}', '${listName}', ${itemIdx})">🗑️</button>
+            </span>`;
+        }
+
+        function createRelationshipItem(rel, className, storyIdx, type, listName, itemIdx, selectable = false) {
+            const relText = `${rel.source} → ${rel.relation} → ${rel.target}`;
+            const checkbox = selectable ? `<input type="checkbox" class="item-checkbox" data-story="${storyIdx}" data-type="${type}" data-list="${listName}" data-idx="${itemIdx}">` : '';
+            return `<div class="relationship-item ${className}" data-text="${relText}">
+                <div class="checkbox-wrapper">
+                    ${checkbox}
+                    <span>${relText}</span>
+                </div>
+                <button class="delete-btn" onclick="deleteItem(${storyIdx}, '${type}', '${listName}', ${itemIdx})">🗑️</button>
+            </div>`;
+        }
+
+        window.deleteItem = function (storyIdx, type, listName, itemIdx) {
+            if (!confirm('Are you sure you want to delete this item?')) return;
+
+            const story = currentData.stories[storyIdx];
+            story[listName].splice(itemIdx, 1);
+
+            renderAll();
+        };
+
+        function attachEventListeners() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateMergeButton);
+            });
+        }
+
+        function updateMergeButton() {
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+            const storyGroups = {};
+
+            checkboxes.forEach(cb => {
+                const storyIdx = cb.dataset.story;
+                if (!storyGroups[storyIdx]) storyGroups[storyIdx] = [];
+                storyGroups[storyIdx].push(cb);
+            });
+
+            document.querySelectorAll('.merge-btn').forEach(btn => btn.classList.remove('show'));
+
+            for (const [storyIdx, cbs] of Object.entries(storyGroups)) {
+                if (cbs.length === 2) {
+                    const types = cbs.map(cb => cb.dataset.list);
+                    const isClassMerge = types.includes('onlyManual') && types.includes('onlyLLM');
+                    const isRelMerge = types.includes('onlyManualRelationships') && types.includes('onlyLLMRelationships');
+
+                    if (isClassMerge || isRelMerge) {
+                        const card = document.querySelector(`.story-card[data-index="${storyIdx}"]`);
+                        if (card) card.querySelector('.merge-btn').classList.add('show');
+                    }
+                }
+            }
+        }
+
+        window.mergeItems = function (storyIdx) {
+            const checkboxes = document.querySelectorAll(`.story-card[data-index="${storyIdx}"] .item-checkbox:checked`);
+            if (checkboxes.length !== 2) return;
+
+            const item1 = checkboxes[0];
+            const item2 = checkboxes[1];
+
+            const list1 = item1.dataset.list;
+            const list2 = item2.dataset.list;
+            const idx1 = parseInt(item1.dataset.idx);
+            const idx2 = parseInt(item2.dataset.idx);
+
+            const story = currentData.stories[storyIdx];
+
+            // Determine which is manual and which is LLM
+            let manualItem, llmItem;
+
+            if (list1.includes('Manual')) {
+                manualItem = story[list1][idx1];
+                llmItem = story[list2][idx2];
+                story[list1].splice(idx1, 1);
+                // Adjust index if list2 is same as list1 (not possible here but good practice)
+                story[list2].splice(idx2, 1);
+            } else {
+                manualItem = story[list2][idx2];
+                llmItem = story[list1][idx1];
+                story[list2].splice(idx2, 1);
+                story[list1].splice(idx1, 1);
+            }
+
+            // Add to common
+            if (list1.includes('Relationship')) {
+                // For relationships, we prefer the Manual one as the "truth" but maybe we should merge?
+                // For now, let's just add the Manual one to common
+                story.commonRelationships.push(manualItem);
+            } else {
+                story.common.push(manualItem);
+            }
+
+            renderAll();
+        };
+
+        function filterResults(searchTerm) {
+            const cards = results.querySelectorAll('.story-card');
+
+            cards.forEach(card => {
+                const storyName = card.dataset.storyName.toLowerCase();
+                const items = card.querySelectorAll('[data-text]');
+
+                let hasMatch = storyName.includes(searchTerm);
+
+                items.forEach(item => {
+                    const text = item.dataset.text.toLowerCase();
+                    const originalText = item.dataset.text;
+                    const container = item.closest('.item-tag') || item.closest('.relationship-item');
+
+                    if (text.includes(searchTerm) && searchTerm) {
+                        hasMatch = true;
+                        // Highlight matching text - simple implementation
+                        // Note: This might break event listeners if we replace innerHTML blindly
+                        // For safety in this version, we just show/hide
+                    }
+                });
+
+                card.classList.toggle('hidden', !hasMatch && searchTerm);
+            });
+        }
+    </script>
+</body>
+
+</html>

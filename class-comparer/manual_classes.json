@@ -1,0 +1,42 @@
+{
+    "Camperplus_sampled": {
+        "stories": [
+            {
+                "story_id": 1,
+                "classes": [
+                    "CampAdministrator",
+                    "MedicalForm",
+                    "AllergyAttack"
+                ],
+                "relationships": [
+                    {
+                        "source": "CampAdministrator",
+                        "relation": "views",
+                        "target": "MedicalForm"
+                    }
+                ]
+            },
+            {
+                "story_id": 2,
+                "classes": [
+                    "CampAdministrator",
+                    "Camper",
+                    "Schedule",
+                    "CampWorker"
+                ],
+                "relationships": [
+                    {
+                        "source": "CampAdministrator",
+                        "relation": "manages",
+                        "target": "Schedule"
+                    },
+                    {
+                        "source": "Schedule",
+                        "relation": "assigns",
+                        "target": "Camper"
+                    }
+                ]
+            }
+        ]
+    }
+}

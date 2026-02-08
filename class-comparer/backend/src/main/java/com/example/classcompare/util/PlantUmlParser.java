@@ -13,10 +13,13 @@ import java.util.regex.Pattern;
 @Component
 public class PlantUmlParser {
 
+    // Common arrow patterns
+    private static final String ARROW_PATTERNS = "(-->|<--|\\*--|--\\*|o--|--o|<\\|--|--|\\.\\.>|<\\.\\.)";
+    
     // Patterns for parsing PlantUML class diagram syntax
     private static final Pattern CLASS_PATTERN = Pattern.compile("class\\s+([A-Za-z0-9_]+)");
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile("([A-Za-z0-9_]+)\\s+(-->|<--|\\*--|--\\*|o--|--o|<\\|--|--|\\.\\.>|<\\.\\.)\\.+([A-Za-z0-9_]+)");
-    private static final Pattern RELATIONSHIP_WITH_LABEL_PATTERN = Pattern.compile("([A-Za-z0-9_]+)\\s+(-->|<--|\\*--|--\\*|o--|--o|<\\|--|--|\\.\\.>|<\\.\\.)\\.+\"([^\"]+)\"\\s+([A-Za-z0-9_]+)");
+    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile("([A-Za-z0-9_]+)\\s+" + ARROW_PATTERNS + "\\.+([A-Za-z0-9_]+)");
+    private static final Pattern RELATIONSHIP_WITH_LABEL_PATTERN = Pattern.compile("([A-Za-z0-9_]+)\\s+" + ARROW_PATTERNS + "\\.+\"([^\"]+)\"\\s+([A-Za-z0-9_]+)");
 
     /**
      * Parses PlantUML content and extracts classes and relationships

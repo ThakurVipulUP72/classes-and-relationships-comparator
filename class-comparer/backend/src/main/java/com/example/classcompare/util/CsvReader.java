@@ -85,8 +85,15 @@ public class CsvReader {
         Reader reader = new InputStreamReader(is);
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withTrim());
 
+        // Column indices
+        final int STORY_COLUMN = 0;
+        final int TYPE_COLUMN = 1;
+        final int VALUE1_COLUMN = 2;
+        final int VALUE2_COLUMN = 3;
+        final int VALUE3_COLUMN = 4;
+
         for (CSVRecord record : csvParser) {
-            String story = record.get(0); // First column is story
+            String story = record.get(STORY_COLUMN); // First column is story
             if (story == null || story.trim().isEmpty()) {
                 continue;
             }
@@ -99,18 +106,18 @@ public class CsvReader {
                 return data;
             });
 
-            String type = record.get(1); // Second column indicates type
+            String type = record.get(TYPE_COLUMN); // Second column indicates type
             if ("Class".equalsIgnoreCase(type)) {
-                String className = record.get(2);
+                String className = record.get(VALUE1_COLUMN);
                 if (className != null && !className.trim().isEmpty()) {
                     @SuppressWarnings("unchecked")
                     Set<String> classes = (Set<String>) storyData.get("classes");
                     classes.add(className.trim());
                 }
             } else if ("Relationship".equalsIgnoreCase(type)) {
-                String source = record.get(2);
-                String relation = record.get(3);
-                String target = record.get(4);
+                String source = record.get(VALUE1_COLUMN);
+                String relation = record.get(VALUE2_COLUMN);
+                String target = record.get(VALUE3_COLUMN);
 
                 if (source != null && relation != null && target != null &&
                     !source.trim().isEmpty() && !relation.trim().isEmpty() && !target.trim().isEmpty()) {

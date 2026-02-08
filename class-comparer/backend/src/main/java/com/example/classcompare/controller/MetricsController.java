@@ -122,9 +122,9 @@ public class MetricsController {
                     key = String.format("%04d-%02d", timestamp.getYear(), timestamp.getMonthValue());
                     break;
                 case "weekly":
-                    // Simplified - use ISO week
+                    // Use ISO 8601 week numbering
                     key = String.format("%04d-W%02d", timestamp.getYear(), 
-                            (timestamp.getDayOfYear() / 7) + 1);
+                            timestamp.get(java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR));
                     break;
                 case "daily":
                 default:

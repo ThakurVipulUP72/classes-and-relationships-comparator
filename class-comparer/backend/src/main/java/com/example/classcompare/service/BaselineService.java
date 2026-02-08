@@ -108,8 +108,16 @@ public class BaselineService {
         baseline.ifPresent(baselineRepository::delete);
     }
 
-    private double calculatePercentageChange(double oldValue, double newValue) {
-        if (oldValue == 0.0) return 0.0;
+    /**
+     * Calculates percentage change, handling edge cases
+     * Returns null for undefined cases (old value is zero, new value is non-zero)
+     */
+    private Double calculatePercentageChange(double oldValue, double newValue) {
+        if (oldValue == 0.0) {
+            // Cannot calculate percentage change from zero
+            // Return null to indicate undefined
+            return newValue == 0.0 ? 0.0 : null;
+        }
         return ((newValue - oldValue) / oldValue) * 100.0;
     }
 }

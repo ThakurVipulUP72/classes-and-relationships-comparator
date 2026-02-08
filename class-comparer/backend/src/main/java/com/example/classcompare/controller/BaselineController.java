@@ -19,6 +19,8 @@ public class BaselineController {
         this.baselineService = baselineService;
     }
 
+    // TODO: Replace with proper authentication/authorization
+    // Currently using default user ID for simplicity - NOT PRODUCTION READY
     @PostMapping
     public ResponseEntity<BaselineEntity> setBaseline(
             @RequestParam Long comparisonId,

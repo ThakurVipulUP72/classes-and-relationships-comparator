@@ -22,6 +22,8 @@ public class ApiKeyController {
         this.apiKeyService = apiKeyService;
     }
 
+    // TODO: Replace with proper authentication/authorization
+    // Currently using default user ID for simplicity - NOT PRODUCTION READY
     @PostMapping
     public ResponseEntity<Map<String, Object>> addApiKey(@RequestBody Map<String, String> request) {
         String provider = request.get("provider");
@@ -41,6 +43,8 @@ public class ApiKeyController {
         return ResponseEntity.ok(response);
     }
 
+    // TODO: Replace with proper authentication/authorization
+    // Currently using default user ID for simplicity - NOT PRODUCTION READY
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> listApiKeys(
             @RequestParam(defaultValue = "default-user") String userId) {
@@ -63,6 +67,8 @@ public class ApiKeyController {
         return ResponseEntity.ok(response);
     }
 
+    // TODO: Replace with proper authentication/authorization
+    // Currently using default user ID for simplicity - NOT PRODUCTION READY
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteApiKey(
             @PathVariable Long id,

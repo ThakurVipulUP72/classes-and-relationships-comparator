@@ -68,36 +68,39 @@ A comprehensive tool for comparing manually created class diagrams with LLM-gene
 
 ## Getting Started
 
+> **📖 [READ THIS FIRST: How to Run the Application Locally](HOW_TO_RUN.md)**
+> 
+> The application runs on YOUR local computer. Please follow the detailed guide in [HOW_TO_RUN.md](HOW_TO_RUN.md) for step-by-step instructions.
+
 ### Prerequisites
 - Java 21 or higher
-- Maven 3.9+
-- Node.js (for frontend development)
+- Maven 3.9+ (or use included Maven wrapper)
+- Python 3 or Node.js (for frontend server)
 
-### Installation
+### Quick Start (Local Development)
 
-1. Clone the repository:
+**Windows:**
+1. Double-click `start-backend.bat` (wait for "Started ClassCompareApp")
+2. Double-click `start-frontend.bat` (in a new terminal)
+3. Open http://localhost:3000 in your browser
+
+**Linux/Mac:**
+1. Run `./start-backend.sh` (wait for "Started ClassCompareApp")
+2. Run `./start-frontend.sh` (in a new terminal)
+3. Open http://localhost:3000 in your browser
+
+**Manual Start:**
 ```bash
-git clone https://github.com/ThakurVipulUP72/classes-and-relationships-comparator.git
-cd classes-and-relationships-comparator
-```
-
-2. Build the backend:
-```bash
+# Terminal 1 - Backend
 cd class-comparer/backend
-mvn clean install
-```
-
-3. Run the backend:
-```bash
 mvn spring-boot:run
+
+# Terminal 2 - Frontend
+cd class-comparer/frontend
+python3 -m http.server 3000
 ```
 
-4. Open the frontend:
-```bash
-cd ../frontend
-# Open index.html in a browser or use a local server
-python -m http.server 3000  # Or use any other method
-```
+> ⚠️ **Important**: Both backend AND frontend must be running. See [HOW_TO_RUN.md](HOW_TO_RUN.md) for detailed troubleshooting.
 
 ### Access Links
 

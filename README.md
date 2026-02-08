@@ -1,6 +1,17 @@
 # Classes and Relationships Comparator
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/ThakurVipulUP72/classes-and-relationships-comparator)
+[![Java](https://img.shields.io/badge/Java-21-orange?logo=java)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-brightgreen?logo=spring)](https://spring.io/projects/spring-boot)
+
 A comprehensive tool for comparing manually created class diagrams with LLM-generated class diagrams from user stories.
+
+## 🔗 Quick Links
+
+- **Repository**: [https://github.com/ThakurVipulUP72/classes-and-relationships-comparator](https://github.com/ThakurVipulUP72/classes-and-relationships-comparator)
+- **Frontend** (when running): [http://localhost:3000](http://localhost:3000)
+- **Backend API** (when running): [http://localhost:8080](http://localhost:8080)
+- **H2 Console** (when running): [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 
 ## Features
 
@@ -87,6 +98,28 @@ cd ../frontend
 # Open index.html in a browser or use a local server
 python -m http.server 3000  # Or use any other method
 ```
+
+### Access Links
+
+Once the application is running, access it at:
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend** | http://localhost:3000 | Main UI for file upload and comparison |
+| **Backend API** | http://localhost:8080 | REST API base URL |
+| **H2 Console** | http://localhost:8080/h2-console | Database management interface |
+
+**H2 Database Connection Details:**
+- JDBC URL: `jdbc:h2:mem:classcomparer`
+- Username: `sa`
+- Password: (leave empty)
+
+**Key API Endpoints:**
+- `POST /api/upload` - Upload and compare files
+- `GET /api/metrics/history` - Get comparison history
+- `GET /api/keys` - List API keys
+- `POST /api/visualize/pdf` - Generate PDF report
+- `POST /api/baseline` - Set comparison baseline
 
 ### Configuration
 
